@@ -17,6 +17,9 @@ import copy
 # Physical constants
 HBAR = 6.582E-1    # eV*fs
 HBAR_EVOLVE = 1.055E-19   # J*fs
+EPSILON_0 = 8.854188E-12    # C/(Vm)
+C = 3E8*1E-15    #(m/fs)
+DENSITY = 90.9*1E27      # (atoms/m^3)
 
 def run_sim(times, E_in, system):
     delta_ts = np.diff(times)
@@ -58,8 +61,12 @@ def get_phot_result(system):
     history = system.history
     phot_polarization = convert_time_to_phot(history['t'], history['polarization'])
     phot_E = convert_time_to_phot(history['t'], history['field_envelope'])
+    k = system.omega_l/C
+    thickness = 2E-9     # thickness in m
+    phot_E_out = phot_E['phot_y']-thickness*phot_polarization['phot_y']*1j*k/(2*EPSILON_0)
     phot_results = {'phots': phot_polarization['phot'],
                     'polarization': phot_polarization['phot_y'],
+                    'E_out': phot_E_out,
                     'E_in': phot_E['phot_y']}
     return phot_results
 
@@ -196,5 +203,5 @@ class MultilevelBloch:
         pol = 0
         for i in self.valence_states:
             for j in self.core_states:
-                pol += self.mu[i, j]*self.rho[j, i]*np.exp(-1j*self.omega_ij[j, i]*self.t)*np.exp(1j*self.omega_l*self.t)
+                pol += DENSITY*self.mu[i, j]*self.rho[j, i]*np.exp(-1j*self.omega_ij[j, i]*self.t)*np.exp(1j*self.omega_l*self.t)
         return pol

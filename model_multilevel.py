@@ -15,7 +15,7 @@ import xbloch2019
 # Physical constants
 HBAR = 6.582E-1    # eV*fs
 # Model material parameters:
-DIPOLE = (4.07E-12+0j)*1.602E-19    # Dipole matrix element to use
+DIPOLE = (4.07E-12+0j)*1.602E-19    # Dipole matrix element to use   (I think this is in C*m, but need to check)
 Co_L3_BROAD = 0.43    # Natural lifetime of Co 2p_{3/2} core hole
 
 def create_two_level_system(t0):
